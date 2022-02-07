@@ -2,39 +2,22 @@ package main
 
 import (
 	"bufio"
-	"fmt"
 	"os"
-	"regexp"
 )
 
-type Variable struct {
-	galaxyUnit   map[string]string
-	galaxyCredit map[string]float32
-}
-
-func translator(input string) string {
-	var output string
-
-	r, _ := regexp.Compile(`([.a-z]+) is ([.A-Z]+)$`)
-
-	// Using FindStringSubmatch you are able to access the
-	// individual capturing groups
-	for index, match := range r.FindStringSubmatch(input) {
-		fmt.Printf("[%d] %s\n", index, match)
-	}
-
-	return output
-}
 func main() {
 	reader := bufio.NewReader(os.Stdin)
 
+	//Init a new System Struct
+	var s System
+	s.Init()
 	for {
 		text, _, err := reader.ReadLine()
 		str := string(text)
 		if str == "" || err != nil {
 			break
 		}
-		fmt.Println(translator(str))
+		s.Translate(str)
 		//fmt.Println(str)
 	}
 }
