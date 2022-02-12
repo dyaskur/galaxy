@@ -56,7 +56,7 @@ func (s *System) Init() {
 	}
 }
 
-//Translate input to command/action
+//Translate or convert input to command/action
 func (s *System) Translate(input string) {
 	//flag for query is already process or not
 	isUnderstandable := false
@@ -70,7 +70,7 @@ func (s *System) Translate(input string) {
 		//fmt.Println(re.FindStringSubmatch(input))
 
 		if re.Match([]byte(input)) {
-			s.doAction(input, reg.action, reg.formula)
+			s.DoAction(input, reg.action, reg.formula)
 			isUnderstandable = true
 			break
 		}
@@ -78,7 +78,7 @@ func (s *System) Translate(input string) {
 
 	//If the system don't understand the input, print output
 	if isUnderstandable == false {
-		s.addOutput("I have no idea what you are talking about")
+		s.AddOutput("I have no idea what you are talking about")
 	}
 }
 
@@ -161,8 +161,8 @@ func RomanToDecimal(roman string) float32 {
 	return result
 }
 
-//Doing the commands
-func (s *System) doAction(input, action, regex string) {
+//DoAction Doing the commands
+func (s *System) DoAction(input, action, regex string) {
 	groups := MatchInput(input, regex)
 	switch action {
 	case "setGalaxyUnit":
@@ -215,7 +215,7 @@ func (s *System) doAction(input, action, regex string) {
 
 		//Add output
 		output := fmt.Sprintf("%s is %v", groups["galaxyUnits"], romanNum)
-		s.addOutput(output)
+		s.AddOutput(output)
 
 		//answer how many Credits question (e.g. how many Credits is glob prok Silver ? )
 	case "getGalaxyCredit":
@@ -237,11 +237,11 @@ func (s *System) doAction(input, action, regex string) {
 		//Add output
 		totalCredit := s.galaxyCredit[mineral] * romanNum
 		output := fmt.Sprintf("%s %s is %v Credits", groups["galaxyUnits"], mineral, totalCredit)
-		s.addOutput(output)
+		s.AddOutput(output)
 	}
 }
 
-//Function for add output
-func (s *System) addOutput(output string) {
+//AddOutput Function for add output
+func (s *System) AddOutput(output string) {
 	s.output = append(s.output, output)
 }
