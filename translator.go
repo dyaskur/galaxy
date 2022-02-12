@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 	"regexp"
+	"strconv"
+	"strings"
 )
 
 type System struct {
@@ -29,7 +31,7 @@ func (s *System) Init() {
 	s.regexVars = make(map[string]string)
 
 	s.regexVars["galaxyUnit"] = `(?P<galaxyUnit>([a-z]+))`
-	s.regexVars["galaxyUnits"] = `(?P<galaxyUnit>([a-z ]+))`
+	s.regexVars["galaxyUnits"] = `(?P<galaxyUnits>([a-z ]+))`
 	s.regexVars["roman"] = `(?P<romanNum>([IVXLCDM]+))`
 	s.regexVars["mineral"] = `(?P<mineral>([A-Z][a-z]*))`
 	s.regexVars["credit"] = `(?P<credit>([0-9]+))`
@@ -93,32 +95,88 @@ func (s *System) Translate(input string) {
 	}
 }
 
+// MatchInput match the input with regex and get value of the variable/data
+func MatchInput(input, regex string) map[string]string {
+	re := regexp.MustCompile(regex)
+
+	match := re.FindStringSubmatch(input)
+
+	groups := make(map[string]string)
+
+	for i, groupName := range re.SubexpNames() {
+		if i == 0 {
+			continue
+		}
+
+		groups[groupName] = match[i]
+	}
+
+	return groups
+}
+
+// RomanToDecimal  to convert Roman to decimal
+func RomanToDecimal(roman string) float32 {
+	var decimal float32
+
+	for _, r := range roman {
+		switch r {
+		case 'I':
+			decimal += 1
+		case 'V':
+			decimal += 5
+		case 'X':
+			decimal += 10
+		case 'L':
+			decimal += 50
+		case 'C':
+			decimal += 100
+		case 'D':
+			decimal += 500
+		case 'M':
+			decimal += 1000
+		}
+	}
+
+	return decimal
+}
+
 //Doing the commands
-func (s *System) doAction(line, action, regex string) {
+func (s *System) doAction(input, action, regex string) {
 	switch action {
 	case "setGalaxyUnit":
-		re := regexp.MustCompile(regex)
-
-		match := re.FindStringSubmatch(line)
-
-		groups := make(map[string]string)
-
-		for i, groupName := range re.SubexpNames() {
-			if i == 0 {
-				continue
-			}
-
-			groups[groupName] = match[i]
-		}
+		groups := MatchInput(input, regex)
 		//fmt.Println(groups)
 		var galaxyUnit = groups["galaxyUnit"]
 		var romanNum = groups["romanNum"]
 
 		//defining the galaxy unit
 		s.galaxyUnit[galaxyUnit] = romanNum
-		fmt.Println(s.galaxyUnit)
+		//fmt.Println(s.galaxyUnit)
 
 	case "setGalaxyUnitCredit":
+
+		groups := MatchInput(input, regex)
+		//fmt.Println(groups)
+		var mineral = groups["mineral"]
+
+		galaxyUnits := strings.Split(groups["galaxyUnits"], " ")
+		println(galaxyUnits, groups["galaxyUnits"], "sas")
+		var romanStr string
+		for i := range galaxyUnits {
+			romanStr += s.galaxyUnit[galaxyUnits[i]]
+		}
+
+		//convert roman to decimal
+		romanNum := RomanToDecimal(romanStr)
+		fmt.Println(romanNum, romanStr, "romanNum")
+
+		credit, err := strconv.Atoi(groups["credit"])
+		if err != nil {
+			panic(err)
+		}
+		//defining the galaxy unit
+		s.galaxyCredit[mineral] = float32(credit) / romanNum
+		fmt.Println(s.galaxyCredit, "zzz")
 	case "getGalaxyUnitCredit":
 	case "getGalaxyCredit":
 	}
