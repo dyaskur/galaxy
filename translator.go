@@ -53,6 +53,14 @@ func (s *System) Init() {
 			formula: `^how many Credits is ` + s.regexVars["galaxyUnits"] + ` ` + s.regexVars["mineral"] + ` \?$`,
 			action:  "getGalaxyCredit",
 		},
+		{
+			formula: `^how much is ` + s.regexVars["galaxyUnits"] + `\?$`,
+			action:  "getGalaxyUnitCredit",
+		},
+		{
+			formula: `^how many Credits is ` + s.regexVars["galaxyUnits"] + ` ` + s.regexVars["mineral"] + `\?$`,
+			action:  "getGalaxyCredit",
+		},
 	}
 }
 
@@ -230,6 +238,10 @@ func (s *System) DoAction(input, action, regex string) {
 		romanNum := RomanToDecimal(romanStr)
 		//fmt.Println(romanNum, romanStr, "romanNum")
 
+		//if the galaxy units is not valid, e.g too many duplicate unit
+		if romanNum == -1 {
+			s.AddOutput("Your units are not valid")
+		}
 		var mineral = groups["mineral"]
 		//fmt.Println(s.galaxyCredit[mineral]*romanNum, "zzz")
 		//fmt.Println(s.galaxyCredit)
