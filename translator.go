@@ -116,35 +116,69 @@ func MatchInput(input, regex string) map[string]string {
 
 // RomanToDecimal  to convert Roman to decimal
 func RomanToDecimal(roman string) float32 {
-	var decimal float32
+	var romanValue float32
+	var result float32
 
-	for _, r := range roman {
-		switch r {
-		case 'I':
-			decimal += 1
-		case 'V':
-			decimal += 5
-		case 'X':
-			decimal += 10
-		case 'L':
-			decimal += 50
-		case 'C':
-			decimal += 100
-		case 'D':
-			decimal += 500
-		case 'M':
-			decimal += 1000
+	romanValues := make(map[int32]float32)
+	romanValues['I'] = 1
+	romanValues['V'] = 5
+	romanValues['X'] = 10
+	romanValues['L'] = 50
+	romanValues['C'] = 100
+	romanValues['D'] = 500
+	romanValues['M'] = 1000
+
+	leadingOnes := make(map[int32]bool)
+	leadingOnes['I'] = true
+	leadingOnes['V'] = false
+	leadingOnes['X'] = true
+	leadingOnes['L'] = false
+	leadingOnes['C'] = true
+	leadingOnes['D'] = false
+	leadingOnes['M'] = true
+
+	//Temporary variables for check duplicate
+	var countDuplicate int
+	var duplicateChar int32
+	for i, r := range roman {
+		//The symbols "I", "X", "C", and "M" can be repeated three times in succession, but no more. (They may appear four times if the third and fourth are separated by a smaller value, such as XXXIX.) "D", "L", and "V" can never be repeated.
+		//Check duplicate
+		if duplicateChar != r {
+			duplicateChar = r
+			countDuplicate = 1
+		} else {
+			if leadingOnes[r] == true {
+				countDuplicate++
+			} else {
+				result = -1
+				return result
+			}
+		}
+
+		if countDuplicate > 3 {
+			result = -1
+			return result
+		}
+		//end of check duplicate
+		romanValue = romanValues[r]
+
+		//"I" can be subtracted from "V" and "X" only. "X" can be subtracted from "L" and "C" only. "C" can be subtracted from "D" and "M" only. "V", "L", and "D" can never be subtracted.
+		//Only one small-value symbol may be subtracted from any large-value symbol.
+		if leadingOnes[r] && i != len(roman)-1 && romanValue < romanValues[int32(roman[i+1])] {
+			result -= romanValue
+		} else {
+			result += romanValue
 		}
 	}
 
-	return decimal
+	return result
 }
 
 //Doing the commands
 func (s *System) doAction(input, action, regex string) {
+	groups := MatchInput(input, regex)
 	switch action {
 	case "setGalaxyUnit":
-		groups := MatchInput(input, regex)
 		//fmt.Println(groups)
 		var galaxyUnit = groups["galaxyUnit"]
 		var romanNum = groups["romanNum"]
@@ -154,8 +188,6 @@ func (s *System) doAction(input, action, regex string) {
 		//fmt.Println(s.galaxyUnit)
 
 	case "setGalaxyUnitCredit":
-
-		groups := MatchInput(input, regex)
 		//fmt.Println(groups)
 		var mineral = groups["mineral"]
 
@@ -177,7 +209,37 @@ func (s *System) doAction(input, action, regex string) {
 		//defining the galaxy unit
 		s.galaxyCredit[mineral] = float32(credit) / romanNum
 		fmt.Println(s.galaxyCredit, "zzz")
+		//how much question (e.g. how much is pish tegj glob glob ? )
 	case "getGalaxyUnitCredit":
+		//fmt.Println(groups)
+		var galaxyUnits = strings.Split(groups["galaxyUnits"], " ")
+		var romanStr string
+		for i := range galaxyUnits {
+			romanStr += s.galaxyUnit[galaxyUnits[i]]
+		}
+
+		//convert roman to decimal
+		romanNum := RomanToDecimal(romanStr)
+		fmt.Println(romanNum, romanStr, "romanNum")
+
+		var mineral = groups["mineral"]
+		fmt.Println(s.galaxyCredit[mineral], "zzz")
+		//fmt.Println(s.galaxyCredit)
+		//how many Credits question (e.g. how many Credits is glob prok Silver ? )
 	case "getGalaxyCredit":
+		//fmt.Println(groups)
+		var galaxyUnits = strings.Split(groups["galaxyUnits"], " ")
+		var romanStr string
+		for i := range galaxyUnits {
+			romanStr += s.galaxyUnit[galaxyUnits[i]]
+		}
+
+		//convert roman to decimal
+		romanNum := RomanToDecimal(romanStr)
+		fmt.Println(romanNum, romanStr, "romanNum")
+
+		var mineral = groups["mineral"]
+		fmt.Println(s.galaxyCredit[mineral]*romanNum, "zzz")
+		//fmt.Println(s.galaxyCredit)
 	}
 }
