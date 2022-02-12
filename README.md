@@ -11,6 +11,12 @@ I create the formula pattern of the input line which is consisted of:
 
 I translate every input line using the formula patterns and get the variables groups and compute them then save them int the system.
 For the question inputs, system will add output lines that will be printed after the end of the program 
+
+### Nontrivial assumptions
+- Intergalaxy units should consist of small letters
+- Intergalaxy minerals/commodity should be started with capital letter
+- To ask for intergalaxy unit price, you should start with "how much" and end with "?"
+- To ask for intergalaxy mineral/commodity credit, you should start with "how many" and end with "?"
 ### How to use
 
 - Clone this repository
