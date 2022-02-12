@@ -213,7 +213,7 @@ func (s *System) DoAction(input, action, regex string) {
 		if romanNum == -1 {
 			s.AddOutput("I have no idea what you are talking about")
 		} else {
-			s.AddOutput(fmt.Sprintf("%s is %.2f", groups["galaxyUnits"], romanNum*s.galaxyCredit[groups["mineral"]]))
+			s.AddOutput(fmt.Sprintf("%s is %v", groups["galaxyUnits"], romanNum))
 		}
 
 	case "getGalaxyCredit": //answer how many Credits question (e.g. how many Credits is glob prok Silver ? )
@@ -237,6 +237,11 @@ func (s *System) DoAction(input, action, regex string) {
 			s.AddOutput(output)
 		}
 	}
+}
+
+//GetOutput method to get list of output
+func (s *System) GetOutput() []string {
+	return s.output
 }
 
 //AddOutput Function for add output
