@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"fmt"
 	"os"
 )
 
@@ -19,5 +20,9 @@ func main() {
 		}
 		s.Translate(str)
 		//fmt.Println(str)
+	}
+
+	for i := range s.output {
+		fmt.Println(s.output[i])
 	}
 }

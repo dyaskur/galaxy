@@ -56,19 +56,6 @@ func (s *System) Init() {
 	}
 }
 
-func (s *System) translator(input string) string {
-	var output string
-
-	r := regexp.MustCompile(s.regexVars["galaxyUnit"] + ` is ` + s.regexVars["roman"])
-
-	// Using FindStringSubmatch you are able to access the
-	// individual capturing groups
-	fmt.Printf("%#v\n", r.FindStringSubmatch(input))
-	fmt.Printf("%#v\n", r.SubexpNames())
-
-	return output
-}
-
 //Translate input to command/action
 func (s *System) Translate(input string) {
 	//flag for query is already process or not
@@ -80,7 +67,7 @@ func (s *System) Translate(input string) {
 			panic(err)
 		}
 
-		fmt.Println(re.FindStringSubmatch(input))
+		//fmt.Println(re.FindStringSubmatch(input))
 
 		if re.Match([]byte(input)) {
 			s.doAction(input, reg.action, reg.formula)
@@ -91,7 +78,7 @@ func (s *System) Translate(input string) {
 
 	//If the system don't understand the input, print output
 	if isUnderstandable == false {
-		println("I have no idea what you are talking about")
+		s.addOutput("I have no idea what you are talking about")
 	}
 }
 
@@ -192,7 +179,7 @@ func (s *System) doAction(input, action, regex string) {
 		var mineral = groups["mineral"]
 
 		galaxyUnits := strings.Split(groups["galaxyUnits"], " ")
-		println(galaxyUnits, groups["galaxyUnits"], "sas")
+		//println(galaxyUnits, groups["galaxyUnits"], "sas")
 		var romanStr string
 		for i := range galaxyUnits {
 			romanStr += s.galaxyUnit[galaxyUnits[i]]
@@ -200,7 +187,7 @@ func (s *System) doAction(input, action, regex string) {
 
 		//convert roman to decimal
 		romanNum := RomanToDecimal(romanStr)
-		fmt.Println(romanNum, romanStr, "romanNum")
+		//fmt.Println(romanNum, romanStr, "romanNum")
 
 		credit, err := strconv.Atoi(groups["credit"])
 		if err != nil {
@@ -208,8 +195,8 @@ func (s *System) doAction(input, action, regex string) {
 		}
 		//defining the galaxy unit
 		s.galaxyCredit[mineral] = float32(credit) / romanNum
-		fmt.Println(s.galaxyCredit, "zzz")
-		//how much question (e.g. how much is pish tegj glob glob ? )
+		//fmt.Println(s.galaxyCredit, "zzz")
+		//answer how much question (e.g. how much is pish tegj glob glob ? )
 	case "getGalaxyUnitCredit":
 		//fmt.Println(groups)
 		var galaxyUnits = strings.Split(groups["galaxyUnits"], " ")
@@ -220,12 +207,17 @@ func (s *System) doAction(input, action, regex string) {
 
 		//convert roman to decimal
 		romanNum := RomanToDecimal(romanStr)
-		fmt.Println(romanNum, romanStr, "romanNum")
+		//fmt.Println(romanNum, romanStr, "romanNum")
 
-		var mineral = groups["mineral"]
-		fmt.Println(s.galaxyCredit[mineral], "zzz")
+		//var mineral = groups["mineral"]
+		//fmt.Println(s.galaxyCredit[mineral], "zzz")
 		//fmt.Println(s.galaxyCredit)
-		//how many Credits question (e.g. how many Credits is glob prok Silver ? )
+
+		//Add output
+		output := fmt.Sprintf("%s is %v", groups["galaxyUnits"], romanNum)
+		s.addOutput(output)
+
+		//answer how many Credits question (e.g. how many Credits is glob prok Silver ? )
 	case "getGalaxyCredit":
 		//fmt.Println(groups)
 		var galaxyUnits = strings.Split(groups["galaxyUnits"], " ")
@@ -236,10 +228,20 @@ func (s *System) doAction(input, action, regex string) {
 
 		//convert roman to decimal
 		romanNum := RomanToDecimal(romanStr)
-		fmt.Println(romanNum, romanStr, "romanNum")
+		//fmt.Println(romanNum, romanStr, "romanNum")
 
 		var mineral = groups["mineral"]
-		fmt.Println(s.galaxyCredit[mineral]*romanNum, "zzz")
+		//fmt.Println(s.galaxyCredit[mineral]*romanNum, "zzz")
 		//fmt.Println(s.galaxyCredit)
+
+		//Add output
+		totalCredit := s.galaxyCredit[mineral] * romanNum
+		output := fmt.Sprintf("%s %s is %v Credits", groups["galaxyUnits"], mineral, totalCredit)
+		s.addOutput(output)
 	}
+}
+
+//Function for add output
+func (s *System) addOutput(output string) {
+	s.output = append(s.output, output)
 }
