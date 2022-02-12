@@ -1,0 +1,20 @@
+poli is I
+tali is V
+deli is X
+tegj is L
+seli is C
+kuli is D
+peti is M
+poli poli Uranium is 68 Credits
+poli tali Vibranium is 128000 Credits
+deli deli Plutonium is 87000 Credits
+kuli seli Thorium is 15000 Credits
+how much is deli tegj poli poli ?
+how much is seli kuli deli tali ?
+how much is seli kuli peti tali ?
+how many Credits is poli tali Uranium ?
+how many Credits is poli tali Vibranium ?
+how many Credits is poli tali Plutonium ?
+how many Credits is poli tali Thorium?
+how many Credits is poli poli poli poli tali Thorium?
+how much ngseli kuli?

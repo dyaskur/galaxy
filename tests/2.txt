@@ -1,0 +1,20 @@
+prek is I
+vick is V
+pish is X
+tegj is L
+anu is C
+kae is D
+lho is M
+prek prek Silver is 34 Credits
+prek vick Gold is 57800 Credits
+pish pish Iron is 3910 Credits
+kae anu Platinum is 30000 Credits
+how much is pish tegj prek prek ?
+how much is anu kae pish vick ?
+how much is anu kae lho vick ?
+how many Credits is prek vick Silver ?
+how many Credits is prek vick Gold ?
+how many Credits is prek vick Iron ?
+how many Credits is prek vick Platinum?
+how many Credits is prek vick vick vick vick Platinum?
+how much nganu kae?
