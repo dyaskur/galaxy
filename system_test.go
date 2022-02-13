@@ -29,7 +29,7 @@ func TestExecute(t *testing.T) {
 		"I have no idea what you are talking about",
 	}
 
-	doTest(input, wants, t)
+	DoTest(input, wants, t)
 }
 
 //Unit test custom
@@ -69,7 +69,7 @@ func TestExecute2(t *testing.T) {
 		"I have no idea what you are talking about",
 	}
 
-	doTest(input, wants, t)
+	DoTest(input, wants, t)
 }
 
 //Unit test custom
@@ -108,10 +108,10 @@ func TestExecute3(t *testing.T) {
 		"Your units are not valid",
 		"I have no idea what you are talking about",
 	}
-	doTest(input, wants, t)
+	DoTest(input, wants, t)
 }
 
-func doTest(input []string, wants []string, t *testing.T) {
+func DoTest(input []string, wants []string, t *testing.T) {
 	//Init Query Struct
 	var s System
 	s.Init()
@@ -121,7 +121,7 @@ func doTest(input []string, wants []string, t *testing.T) {
 		s.Translate(line)
 	}
 	//Get output
-	output := s.GetOutput()
+	output := s.output
 
 	//Match the output with what we want
 	for i := range wants {
