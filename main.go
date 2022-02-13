@@ -19,7 +19,6 @@ func main() {
 			break
 		}
 		s.Translate(str)
-		//fmt.Println(str)
 	}
 
 	for i := range s.output {

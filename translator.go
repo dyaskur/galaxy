@@ -33,7 +33,7 @@ func (s *System) Init() {
 	s.regexVars["galaxyUnit"] = `(?P<galaxyUnit>([a-z]+))`
 	s.regexVars["galaxyUnits"] = `(?P<galaxyUnits>([a-z ]+))`
 	s.regexVars["roman"] = `(?P<romanNum>([IVXLCDM]+))`
-	s.regexVars["mineral"] = `(?P<mineral>([A-Z][a-z]*))`
+	s.regexVars["commodity"] = `(?P<commodity>([A-Z][a-z]*))`
 	s.regexVars["credit"] = `(?P<credit>([0-9]+))`
 
 	s.regexFormulas = []RegexFormula{
@@ -42,7 +42,7 @@ func (s *System) Init() {
 			action:  "setGalaxyUnit",
 		},
 		{
-			formula: s.regexVars["galaxyUnits"] + ` ` + s.regexVars["mineral"] + ` is ` + s.regexVars["credit"] + ` Credits$`,
+			formula: s.regexVars["galaxyUnits"] + ` ` + s.regexVars["commodity"] + ` is ` + s.regexVars["credit"] + ` Credits$`,
 			action:  "setGalaxyUnitCredit",
 		},
 		{
@@ -50,7 +50,7 @@ func (s *System) Init() {
 			action:  "getGalaxyUnitCredit",
 		},
 		{
-			formula: `^how many Credits is ` + s.regexVars["galaxyUnits"] + ` ` + s.regexVars["mineral"] + ` \?$`,
+			formula: `^how many Credits is ` + s.regexVars["galaxyUnits"] + ` ` + s.regexVars["commodity"] + ` \?$`,
 			action:  "getGalaxyCredit",
 		},
 		{
@@ -58,7 +58,7 @@ func (s *System) Init() {
 			action:  "getGalaxyUnitCredit",
 		},
 		{
-			formula: `^how many Credits is ` + s.regexVars["galaxyUnits"] + ` ` + s.regexVars["mineral"] + `\?$`,
+			formula: `^how many Credits is ` + s.regexVars["galaxyUnits"] + ` ` + s.regexVars["commodity"] + `\?$`,
 			action:  "getGalaxyCredit",
 		},
 	}
@@ -66,7 +66,7 @@ func (s *System) Init() {
 
 //Translate or convert input to command/action
 func (s *System) Translate(input string) {
-	//flag for query is already process or not
+	//flag for input is understandable by regex formula or not
 	isUnderstandable := false
 
 	for _, reg := range s.regexFormulas {
@@ -75,11 +75,9 @@ func (s *System) Translate(input string) {
 			panic(err)
 		}
 
-		//fmt.Println(re.FindStringSubmatch(input))
-
 		if re.Match([]byte(input)) {
 			s.DoAction(input, reg.action, reg.formula)
-			isUnderstandable = true
+			isUnderstandable = true //this input is understandable by regex formula
 			break
 		}
 	}
@@ -181,7 +179,7 @@ func (s *System) DoAction(input, action, regex string) {
 		s.galaxyUnit[galaxyUnit] = romanNum
 
 	case "setGalaxyUnitCredit":
-		var mineral = groups["mineral"]
+		var commodity = groups["commodity"]
 
 		galaxyUnits := strings.Split(groups["galaxyUnits"], " ")
 		var romanStr string
@@ -197,7 +195,7 @@ func (s *System) DoAction(input, action, regex string) {
 			panic(err)
 		}
 		//defining the galaxy unit
-		s.galaxyCredit[mineral] = float32(credit) / romanNum
+		s.galaxyCredit[commodity] = float32(credit) / romanNum
 		//answer how much question (e.g. how much is pish tegj glob glob ? )
 	case "getGalaxyUnitCredit":
 		var galaxyUnits = strings.Split(groups["galaxyUnits"], " ")
@@ -230,18 +228,13 @@ func (s *System) DoAction(input, action, regex string) {
 		if romanNum == -1 {
 			s.AddOutput("Your units are not valid")
 		} else {
-			var mineral = groups["mineral"]
+			var commodity = groups["commodity"]
 			//Add output
-			totalCredit := s.galaxyCredit[mineral] * romanNum
-			output := fmt.Sprintf("%s %s is %v Credits", groups["galaxyUnits"], mineral, totalCredit)
+			totalCredit := s.galaxyCredit[commodity] * romanNum
+			output := fmt.Sprintf("%s %s is %v Credits", groups["galaxyUnits"], commodity, totalCredit)
 			s.AddOutput(output)
 		}
 	}
-}
-
-//GetOutput method to get list of output
-func (s *System) GetOutput() []string {
-	return s.output
 }
 
 //AddOutput Function for add output
