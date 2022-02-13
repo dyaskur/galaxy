@@ -1,5 +1,7 @@
 package utils
 
+import "strings"
+
 // RomanToDecimal  to convert Roman to decimal
 func RomanToDecimal(roman string) float32 {
 	var romanValue float32
@@ -58,4 +60,16 @@ func RomanToDecimal(roman string) float32 {
 	}
 
 	return result
+}
+
+func UnitsToDecimal(units string, definedUnits map[string]string) float32 {
+	galaxyUnits := strings.Split(units, " ")
+	var romanStr string
+	for i := range galaxyUnits {
+		romanStr += definedUnits[galaxyUnits[i]]
+	}
+
+	//convert roman to decimal
+	romanNum := RomanToDecimal(romanStr)
+	return romanNum
 }

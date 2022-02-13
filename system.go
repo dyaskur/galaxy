@@ -5,7 +5,6 @@ import (
 	"github.com/dyaskur/galaxy/utils"
 	"regexp"
 	"strconv"
-	"strings"
 )
 
 type System struct {
@@ -103,14 +102,7 @@ func (s *System) DoAction(input, action, regex string) {
 	case "setGalaxyUnitCredit":
 		var commodity = groups["commodity"]
 
-		galaxyUnits := strings.Split(groups["galaxyUnits"], " ")
-		var romanStr string
-		for i := range galaxyUnits {
-			romanStr += s.galaxyUnit[galaxyUnits[i]]
-		}
-
-		//convert roman to decimal
-		romanNum := utils.RomanToDecimal(romanStr)
+		romanNum := utils.UnitsToDecimal(groups["galaxyUnits"], s.galaxyUnit)
 
 		credit, err := strconv.Atoi(groups["credit"])
 		if err != nil {
@@ -120,14 +112,7 @@ func (s *System) DoAction(input, action, regex string) {
 		s.galaxyCredit[commodity] = float32(credit) / romanNum
 		//answer how much question (e.g. how much is pish tegj glob glob ? )
 	case "getGalaxyUnitCredit":
-		var galaxyUnits = strings.Split(groups["galaxyUnits"], " ")
-		var romanStr string
-		for i := range galaxyUnits {
-			romanStr += s.galaxyUnit[galaxyUnits[i]]
-		}
-
-		//convert roman to decimal
-		romanNum := utils.RomanToDecimal(romanStr)
+		romanNum := utils.UnitsToDecimal(groups["galaxyUnits"], s.galaxyUnit)
 
 		//Add output
 		if romanNum == -1 {
@@ -137,14 +122,7 @@ func (s *System) DoAction(input, action, regex string) {
 		}
 
 	case "getGalaxyCredit": //answer how many Credits question (e.g. how many Credits is glob prok Silver ? )
-		var galaxyUnits = strings.Split(groups["galaxyUnits"], " ")
-		var romanStr string
-		for i := range galaxyUnits {
-			romanStr += s.galaxyUnit[galaxyUnits[i]]
-		}
-
-		//convert roman to decimal
-		romanNum := utils.RomanToDecimal(romanStr)
+		romanNum := utils.UnitsToDecimal(groups["galaxyUnits"], s.galaxyUnit)
 
 		//if the galaxy units is not valid, e.g too many duplicate unit
 		if romanNum == -1 {
