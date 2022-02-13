@@ -12,55 +12,20 @@ type System struct {
 	galaxyCredit map[string]float64
 	//List of variable in regex
 	regexVars map[string]string
-	//List of regex formulas/patterns
-	regexFormulas []RegexFormula
+	//List of variable in regex //List of regex formulas/patterns
+	regexFormulas []utils.RegexFormula
 	//list of output that will be printed
 	output []string
-}
-
-//RegexFormula for save all regex and command for queries.
-type RegexFormula struct {
-	formula string
-	action  string
 }
 
 //Init variable
 func (s *System) Init() {
 	s.galaxyUnit = make(map[string]string)
 	s.galaxyCredit = make(map[string]float64)
-	s.regexVars = make(map[string]string)
-
-	s.regexVars["galaxyUnit"] = `(?P<galaxyUnit>([a-z]+))`
-	s.regexVars["galaxyUnits"] = `(?P<galaxyUnits>([a-z ]+))`
-	s.regexVars["roman"] = `(?P<romanNum>([IVXLCDM]+))`
-	s.regexVars["commodity"] = `(?P<commodity>([A-Z][a-z]*))`
-	s.regexVars["credit"] = `(?P<credit>([0-9]+))`
-
-	s.regexFormulas = []RegexFormula{
-		{
-			formula: s.regexVars["galaxyUnit"] + ` is ` + s.regexVars["roman"] + ``,
-			action:  "setGalaxyUnit",
-		},
-		{
-			formula: s.regexVars["galaxyUnits"] + ` ` + s.regexVars["commodity"] + ` is ` + s.regexVars["credit"] + ` Credits$`,
-			action:  "setGalaxyUnitCredit",
-		},
-		{
-			formula: `^how much is ` + s.regexVars["galaxyUnits"] + ` \?$`,
-			action:  "getGalaxyUnitCredit",
-		},
-		{
-			formula: `^how many Credits is ` + s.regexVars["galaxyUnits"] + ` ` + s.regexVars["commodity"] + ` \?$`,
-			action:  "getGalaxyCredit",
-		},
-		{
-			formula: `^how much is ` + s.regexVars["galaxyUnits"] + `\?$`,
-			action:  "getGalaxyUnitCredit",
-		},
-		{
-			formula: `^how many Credits is ` + s.regexVars["galaxyUnits"] + ` ` + s.regexVars["commodity"] + `\?$`,
-			action:  "getGalaxyCredit",
-		},
+	var err error
+	s.regexFormulas, s.regexVars, err = utils.GetFormula()
+	if err != nil {
+		panic(err)
 	}
 }
 
@@ -70,13 +35,13 @@ func (s *System) Translate(input string) {
 	isUnderstandable := false
 
 	for _, reg := range s.regexFormulas {
-		re, err := regexp.Compile(reg.formula)
+		re, err := regexp.Compile(reg.Formula)
 		if err != nil {
 			panic(err)
 		}
 
 		if re.Match([]byte(input)) {
-			s.DoAction(input, reg.action, reg.formula)
+			s.DoAction(input, reg.Action, reg.Formula)
 			isUnderstandable = true //this input is understandable by regex formula
 			break
 		}
