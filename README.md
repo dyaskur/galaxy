@@ -30,8 +30,10 @@ For the question inputs, system will add output lines that will be printed after
 - To ask for intergalaxy mineral/commodity credit, you should start with "how many" and end with "?"
 
 ### Flow chart
+
 [![Flow chart](images/flowchart.svg)](images/flowchart.svg)
 
 ###Demo
+
 [![Demo](images/demo.gif)](images/demo.gif)
 
