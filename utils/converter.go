@@ -3,11 +3,11 @@ package utils
 import "strings"
 
 // RomanToDecimal  to convert Roman to decimal
-func RomanToDecimal(roman string) float32 {
-	var romanValue float32
-	var result float32
+func RomanToDecimal(roman string) float64 {
+	var romanValue float64
+	var result float64
 
-	romanValues := make(map[int32]float32)
+	romanValues := make(map[int32]float64)
 	romanValues['I'] = 1
 	romanValues['V'] = 5
 	romanValues['X'] = 10
@@ -62,7 +62,7 @@ func RomanToDecimal(roman string) float32 {
 	return result
 }
 
-func UnitsToDecimal(units string, definedUnits map[string]string) float32 {
+func UnitsToDecimal(units string, definedUnits map[string]string) float64 {
 	galaxyUnits := strings.Split(units, " ")
 	var romanStr string
 	for i := range galaxyUnits {

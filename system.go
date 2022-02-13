@@ -9,7 +9,7 @@ import (
 
 type System struct {
 	galaxyUnit   map[string]string
-	galaxyCredit map[string]float32
+	galaxyCredit map[string]float64
 	//List of variable in regex
 	regexVars map[string]string
 	//List of regex formulas/patterns
@@ -27,7 +27,7 @@ type RegexFormula struct {
 //Init variable
 func (s *System) Init() {
 	s.galaxyUnit = make(map[string]string)
-	s.galaxyCredit = make(map[string]float32)
+	s.galaxyCredit = make(map[string]float64)
 	s.regexVars = make(map[string]string)
 
 	s.regexVars["galaxyUnit"] = `(?P<galaxyUnit>([a-z]+))`
@@ -104,12 +104,12 @@ func (s *System) DoAction(input, action, regex string) {
 
 		romanNum := utils.UnitsToDecimal(groups["galaxyUnits"], s.galaxyUnit)
 
-		credit, err := strconv.Atoi(groups["credit"])
+		credit, err := strconv.ParseFloat(groups["credit"], 64)
 		if err != nil {
 			panic(err)
 		}
 		//defining the galaxy unit
-		s.galaxyCredit[commodity] = float32(credit) / romanNum
+		s.galaxyCredit[commodity] = credit / romanNum
 		//answer how much question (e.g. how much is pish tegj glob glob ? )
 	case "getGalaxyUnitCredit":
 		romanNum := utils.UnitsToDecimal(groups["galaxyUnits"], s.galaxyUnit)
