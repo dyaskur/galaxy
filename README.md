@@ -33,7 +33,7 @@ For the question inputs, system will add output lines that will be printed after
 
 [![Flow chart](images/flowchart.svg)](images/flowchart.svg)
 
-###Demo
+### Demo
 
 [![Demo](images/demo.gif)](images/demo.gif)
 
